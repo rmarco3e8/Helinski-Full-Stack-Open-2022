@@ -1,0 +1,9 @@
+note over browser:
+User types in text input and presses "Save" button
+end note
+note over browser:
+browser executes js-code (onsubmit event handler)
+that creates a note, adds it, and re-renders the list
+end note
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server->browser: HTTP status code 201 (Created)
