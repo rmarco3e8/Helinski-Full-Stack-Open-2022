@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import Display from "./Display";
 import Button from "./Button";
 import History from "./History";
@@ -19,7 +19,6 @@ const App = () => {
         setAll(allClicks.concat("R"));
     };
 
-
     const setToZero = () => {
         setLeft(0);
         setRight(0);
@@ -29,22 +28,22 @@ const App = () => {
     return (
         <>
             <div>
-            <Display counter={left} />
-            :
-            <Display counter={right} />
+                <Display counter={left} />
+                :
+                <Display counter={right} />
             </div>
             <div>
-            <History allClicks={allClicks} />
+                <History allClicks={allClicks} />
             </div>
-            <Button 
-                onClick={handleLeftClick} 
+            <Button
+                onClick={handleLeftClick}
                 text="left"
             />
-            <Button 
+            <Button
                 onClick={setToZero}
                 text="reset"
             />
-            <Button 
+            <Button
                 onClick={handleRightClick}
                 text="right"
             />
