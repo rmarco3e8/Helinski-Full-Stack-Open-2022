@@ -1,27 +1,21 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import phonebookService from "./services/phonebook";
 
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 
 const App = () => {
-    // const [persons, setPersons] = useState([
-    //     { name: "Arto Hellas", number: "040-123456", id: 1 },
-    //     { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    //     { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    //     { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 }
-    // ]);
-    
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [filter, setFilter] = useState("");
 
     useEffect(() => {
-        axios
-            .get("http://localhost:3001/persons")
-            .then(response => setPersons(response.data));
+        phonebookService
+            .getAll()
+            .then(initialPersons => setPersons(initialPersons));
     }, []);
 
     const handleNameChange = (e) => setNewName(e.target.value);
@@ -32,22 +26,54 @@ const App = () => {
 
     const checkDuplicateName = () => persons.reduce((found, person) => found = person.name === newName, false);
 
+    const resetForm = () => {
+        setNewName("");
+        setNewNumber("");
+    };
+
     const addPerson = (e) => {
         e.preventDefault();
 
         if (checkDuplicateName()) {
-            alert(`${newName} is already added to the phonebook`);
+            const prompt = `${newName} is already added to the phonebook, replace the old number with a new one?`;
+            if (window.confirm(prompt)) {
+                const person = persons.find(person => person.name === newName);
+                const id = person.id;
+                const personToUpdate = {
+                    ...person,
+                    number: newNumber
+                };
+                phonebookService
+                    .update(id, personToUpdate)
+                    .then(updatedPerson => {
+                        setPersons(persons.map(person => person.id !== id ? person : updatedPerson));
+                    })
+            }
         } 
         else {
             const newPerson = {
                 name: newName,
                 number: newNumber
             };
-    
-            setPersons(persons.concat(newPerson));
+
+            phonebookService
+                .create(newPerson)
+                .then(addedPerson => {
+                    setPersons(persons.concat(addedPerson));
+                });
         }
-        setNewName("");
-        setNewNumber("");
+        resetForm();
+    };
+
+    const removePerson = (id) => {
+
+        const prompt = `Delete ${persons.find(person => person.id === id).name}?`;
+
+        if (window.confirm(prompt)) {
+            phonebookService
+            .remove(id)
+            .then(() => setPersons(persons.filter(person => person.id !== id)));
+        }
     };
 
     return (
@@ -56,7 +82,7 @@ const App = () => {
             <Filter filter={filter} onChange={handleFilterChange} />
 
             <h2>Add entry</h2>
-            <PersonForm 
+            <PersonForm
                 addPerson={addPerson}
                 newName={newName}
                 handleNameChange={handleNameChange}
@@ -65,7 +91,11 @@ const App = () => {
             />
 
             <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter}/>
+            <Persons 
+                persons={persons} 
+                filter={filter} 
+                removePerson={removePerson}
+            />
         </div>
     );
 };

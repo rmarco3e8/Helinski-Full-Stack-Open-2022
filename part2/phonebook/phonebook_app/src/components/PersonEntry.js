@@ -1,3 +1,3 @@
-const PersonEntry = ({name, number}) => <p>{`${name}: ${number}`}</p>;
+const PersonEntry = ({name, number}) => <>{`${name}: ${number}`}</>;
 
 export default PersonEntry;
