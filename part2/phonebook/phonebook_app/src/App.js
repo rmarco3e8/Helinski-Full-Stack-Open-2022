@@ -1,16 +1,20 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import "./index.css";
+
 import phonebookService from "./services/phonebook";
 
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 
 const App = () => {
     const [persons, setPersons] = useState([]);
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [filter, setFilter] = useState("");
+    const [notification, setNotification] = useState(null);
+    const [errorFlag, setErrorFlag] = useState(false);
 
     useEffect(() => {
         phonebookService
@@ -31,6 +35,12 @@ const App = () => {
         setNewNumber("");
     };
 
+    const notify = (message, error) => {
+        setErrorFlag(error);
+        setNotification(message);
+        setTimeout(() => setNotification(null), 5000);
+    }
+
     const addPerson = (e) => {
         e.preventDefault();
 
@@ -47,7 +57,11 @@ const App = () => {
                     .update(id, personToUpdate)
                     .then(updatedPerson => {
                         setPersons(persons.map(person => person.id !== id ? person : updatedPerson));
+                        notify(`Updated ${updatedPerson.name}'s number`, false);
                     })
+                    .catch(error => {
+                        notify(`Information of ${person.name} has already been removed from the server`, true);
+                    });
             }
         } 
         else {
@@ -60,6 +74,7 @@ const App = () => {
                 .create(newPerson)
                 .then(addedPerson => {
                     setPersons(persons.concat(addedPerson));
+                    notify(`Added ${addedPerson.name}`, false);
                 });
         }
         resetForm();
@@ -79,6 +94,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification errorFlag={errorFlag} message={notification}/>
             <Filter filter={filter} onChange={handleFilterChange} />
 
             <h2>Add entry</h2>
