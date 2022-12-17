@@ -1,18 +1,35 @@
 import {useState, useEffect} from "react";
 import Note from "./components/Note.js";
-import axios from "axios";
+import Notification from "./components/Notification.js";
+
 import noteService from "./services/notes";
+
+import "./index.css";
+
+const Footer = () => {
+    const footerStyle = {
+        color: 'green',
+        fontStyle: 'italic',
+        fontSize: 16
+    };
+    return (
+        <div style={footerStyle}>
+            <br />
+            <em>Note app, Department of Computer Science, University of Helsinki 2022</em>
+        </div>
+    );
+};
 
 const App = () => {
     const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState("");
     const [showAll, setShowAll] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
         noteService
             .getAll()
             .then(initialNotes => {
-                console.log("promise fulfilled");
                 setNotes(initialNotes);
             });
     }, []);
@@ -46,10 +63,9 @@ const App = () => {
                 setNotes(notes.map((n) => n.id === id ? updatedNote : n));
             })
             .catch(error => {
-                alert(
-                    `the note '${note.content}' was already deleted from server`
-                )
-                setNotes(notes.filter(n => n.id !== id))
+                setErrorMessage(`Note "${note.content}" was already removed from server`);
+                setTimeout(() => setErrorMessage(null), 5000);
+                setNotes(notes.filter(n => n.id !== id));
             });
     };
 
@@ -61,18 +77,20 @@ const App = () => {
     return (
         <>
             <h1>Notes</h1>
+            <Notification message={errorMessage} />
             <button onClick={() => setShowAll(!showAll)}>
                 show {showAll ? "important" : "all"}
             </button>
             <ul>
                 {notesToShow.map(note =>
-                    <Note note={note} toggleImportance={toggleImportance} />
+                    <Note note={note} key={note.id} toggleImportance={toggleImportance} />
                 )}
             </ul>
             <form onSubmit={addNote}>
                 <input value={newNote} onChange={handleNoteChange}/>
                 <button type="submit">save</button>
             </form>
+            <Footer />
         </>
     );
 };
