@@ -111,9 +111,9 @@ app.post("/api/persons", (request, response) => {
         });
     }
     const person = {
-        "id": generateIdRandom(),
-        "name": body.name, 
-        "number": body.number
+        id: generateIdRandom(),
+        name: body.name, 
+        number: body.number
     };
     persons = persons.concat(person);
     response.json(person);
