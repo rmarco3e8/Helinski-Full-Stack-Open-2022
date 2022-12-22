@@ -75,6 +75,10 @@ const App = () => {
                 .then(addedPerson => {
                     setPersons(persons.concat(addedPerson));
                     notify(`Added ${addedPerson.name}`, false);
+                })
+                .catch(error => {
+                    console.log(error.response.data.error);
+                    notify(error.response.data.error, true);
                 });
         }
         resetForm();
