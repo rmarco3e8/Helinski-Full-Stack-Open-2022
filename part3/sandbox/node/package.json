@@ -10,7 +10,8 @@
     "build:ui": "rm -rf build && cd ../../../part2/sandbox/render_collection && npm run build && cp -r build ../../../part3/sandbox/node",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
-    "logs:prod": "fly logs"
+    "logs:prod": "fly logs",
+    "lint": "eslint ."
   },
   "author": "Marco Rodrigues",
   "license": "UNLICENSED",
@@ -21,6 +22,7 @@
     "mongoose": "^6.8.1"
   },
   "devDependencies": {
+    "eslint": "^8.30.0",
     "nodemon": "^2.0.20"
   }
 }
