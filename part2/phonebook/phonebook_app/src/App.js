@@ -28,7 +28,7 @@ const App = () => {
 
     const handleFilterChange = (e) => setFilter(e.target.value);
 
-    const checkDuplicateName = () => persons.reduce((found, person) => found = person.name === newName, false);
+    const checkDuplicateName = () => persons.reduce((found, person) => found = found || person.name === newName, false);
 
     const resetForm = () => {
         setNewName("");
