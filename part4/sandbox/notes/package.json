@@ -1,13 +1,13 @@
 {
-  "name": "backend",
-  "version": "0.0.1",
-  "description": "test",
+  "name": "notes",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:ui": "rm -rf build && cd ../../../part2/sandbox/render_collection && npm run build && cp -r build ../../../part3/sandbox/node",
+    "build:ui": "rm -rf build && cd ../../../part2/sandbox/render_collection && npm run build && cp -r build ../../../part4/sandbox/notes",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
@@ -15,16 +15,16 @@
   },
   "author": "Marco Rodrigues",
   "license": "UNLICENSED",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2",
-    "mongoose": "^6.8.1"
-  },
   "devDependencies": {
     "eslint": "^8.30.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.8.1"
   }
 }
