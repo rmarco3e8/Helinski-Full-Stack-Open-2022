@@ -1,3 +1,11 @@
+const {
+  countBy,
+  maxBy,
+  groupBy,
+  transform,
+  sumBy,
+} = require('lodash');
+
 /* eslint-disable no-unused-vars */
 const dummy = (blogs) => 1;
 /* eslint-enable no-unused-vars */
@@ -17,8 +25,40 @@ const favoriteBlog = (blogs) => {
   return rest;
 };
 
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const numBlogsPerAuthor = countBy(blogs, 'author');
+  const authors = Object.keys(numBlogsPerAuthor);
+
+  const authorWithMostBlogs = maxBy(authors, (auth) => numBlogsPerAuthor[auth]);
+
+  return {
+    author: authorWithMostBlogs,
+    blogs: numBlogsPerAuthor[authorWithMostBlogs],
+  };
+};
+
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return null;
+
+  const blogsGroupedByAuthor = groupBy(blogs, 'author');
+
+  const numLikesPerAuthor = transform(blogsGroupedByAuthor, (res, authBlogs, auth) => {
+    const authLikes = sumBy(authBlogs, 'likes');
+    res.push({
+      author: auth,
+      likes: authLikes,
+    });
+  }, []);
+
+  return maxBy(numLikesPerAuthor, 'likes');
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
+  mostLikes,
 };
