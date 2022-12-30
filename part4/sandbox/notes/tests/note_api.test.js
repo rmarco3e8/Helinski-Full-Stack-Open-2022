@@ -85,7 +85,7 @@ test('a specific note can be viewed', async () => {
   expect(resultNote.body).toEqual(processedNoteToView);
 });
 
-test('a specific note can be viewed', async () => {
+test('a specific note can be deleted', async () => {
   const notesAtStart = await helper.notesInDb();
   const noteToDelete = notesAtStart[0];
 

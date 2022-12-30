@@ -1,6 +1,6 @@
-const { mostBlogs } = require('../utils/list_helper');
+const { mostLikes } = require('../utils/list_helper');
 
-describe('author with most blogs', () => {
+describe('author with most likes', () => {
   const listOfOneBlog = [
     {
       title: 'Go To Statement Considered Harmful',
@@ -41,7 +41,7 @@ describe('author with most blogs', () => {
     {
       title: 'First class tests',
       author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
       likes: 10,
     },
     {
@@ -62,7 +62,7 @@ describe('author with most blogs', () => {
       title: 'Pros and Cons Of Working Out In Hoodie',
       author: 'gymammo rex',
       url: 'https://www.gymammo.com/blogs/gymammo-magazine/pros-and-cons-of-working-out-in-hoodie',
-      likes: 22,
+      likes: 2,
       id: '63a6178ba3ce48d24f4df0e6',
     },
     {
@@ -76,7 +76,7 @@ describe('author with most blogs', () => {
       title: 'ermmmmm please read me...',
       author: 'what the haiiiilllll',
       url: 'http://www.ohhhhmygaawwedd.html',
-      likes: 42,
+      likes: 11,
       id: '63a646a72934b6bfeeec55d1',
     },
     {
@@ -88,48 +88,54 @@ describe('author with most blogs', () => {
     {
       title: 'First class tests',
       author: 'Robert C. Martin',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
       likes: 10,
     },
     {
       title: 'TDD harms architecture',
       author: 'Robert C. Martin',
       url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-      likes: 0,
+      likes: 5,
+    },
+    {
+      title: 'Type wars',
+      author: 'Robert C. Martin',
+      url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+      likes: 2,
     },
   ];
 
   test('of an empty list is null', () => {
-    expect(mostBlogs([])).toBe(null);
+    expect(mostLikes([])).toBe(null);
   });
 
   test('when a list has only one blog equals the author of that blog', () => {
-    const authorWithMostBlogs = {
+    const authorWithMostLikes = {
       author: 'Edsger W. Dijkstra',
-      blogs: 1,
+      likes: 5,
     };
-    expect(mostBlogs(listOfOneBlog)).toEqual(authorWithMostBlogs);
+    expect(mostLikes(listOfOneBlog)).toEqual(authorWithMostLikes);
   });
 
   test('of a bigger list is calculated right', () => {
-    const authorWithMostBlogs = {
-      author: 'Robert C. Martin',
-      blogs: 3,
+    const authorWithMostLikes = {
+      author: 'what the haiiiilllll',
+      likes: 42,
     };
-    expect(mostBlogs(listOfMultipleBlogs)).toEqual(authorWithMostBlogs);
+    expect(mostLikes(listOfMultipleBlogs)).toEqual(authorWithMostLikes);
   });
 
   test('of a bigger list with a tie is either author', () => {
-    const authorsWithMostBlogs = [
+    const authorsWithMostLikes = [
       {
         author: 'Edsger W. Dijkstra',
-        blogs: 2,
+        likes: 17,
       },
       {
         author: 'Robert C. Martin',
-        blogs: 2,
+        likes: 17,
       },
     ];
-    expect(authorsWithMostBlogs).toContainEqual(mostBlogs(listOfMultipleBlogsWithTie));
+    expect(authorsWithMostLikes).toContainEqual(mostLikes(listOfMultipleBlogsWithTie));
   });
 });
