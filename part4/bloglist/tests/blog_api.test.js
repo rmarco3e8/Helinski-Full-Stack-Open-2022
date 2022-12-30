@@ -116,6 +116,51 @@ test('a new blog missing title or url is not added', async () => {
   expect(processedBlogs).not.toContainEqual(blogWithoutURL);
 });
 
+describe('deletion of a blog post', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToDelete = blogsAtStart[0];
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAtEnd = await helper.blogsInDb();
+
+    expect(blogsAtEnd).not.toContainEqual(blogToDelete);
+  });
+});
+
+describe('updating a blog post', () => {
+  test('succeeds with valid data', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const blogUpdated = { ...blogToUpdate, likes: blogToUpdate.likes + 8 };
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogUpdated)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body.likes).toBe(blogToUpdate.likes + 8);
+  });
+
+  test('fails with satus code 404 if data is invalid', async () => {
+    const blogsAtStart = await helper.blogsInDb();
+    const blogToUpdate = blogsAtStart[0];
+    const { likes, ...malformedBlog } = blogToUpdate;
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(malformedBlog)
+      .expect(404);
+
+    const blogsAtEnd = await helper.blogsInDb();
+    expect(blogsAtEnd).toContainEqual(blogToUpdate);
+  });
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
