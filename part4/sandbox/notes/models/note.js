@@ -11,6 +11,10 @@ const noteSchema = new mongoose.Schema({
     required: true,
   },
   important: Boolean,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 /* eslint-disable no-param-reassign, no-underscore-dangle */
