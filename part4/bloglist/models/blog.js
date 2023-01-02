@@ -11,6 +11,10 @@ const blogSchema = new mongoose.Schema({
     required: true,
   },
   likes: Number,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 });
 
 /* eslint-disable no-param-reassign, no-underscore-dangle */
