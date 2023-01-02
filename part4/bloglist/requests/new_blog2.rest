@@ -1,0 +1,10 @@
+post http://localhost:8080/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dnZXIyIiwiaWQiOiI2M2IzNGQwZDE0ZjYwYjI2ZDQ0ZDIzYzAiLCJpYXQiOjE2NzI2OTUyMDIsImV4cCI6MTY3MjczODQwMn0.NudW6gyzCpKqpeueuOT_4Y1I0PxyhToXVs9fw58wr90
+
+{
+  "title": "exotic beetles for terrariums",
+  "author": "johnny greenthumb",
+  "url": "www.beetles4kidz.org",
+  "username": "blogger2"
+}

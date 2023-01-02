@@ -1,6 +1,6 @@
 post http://localhost:8080/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dnZXIxIiwiaWQiOiI2M2IzMTNkNzQ3NTUyYTM1Y2M2NzcyYzciLCJpYXQiOjE2NzI2OTMwMDQsImV4cCI6MTY3MjczNjIwNH0.kF6WYz8x4rJWr04qyBgVzw-grRwXCLnreqVnHccq5ZQ
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dnZXIxIiwiaWQiOiI2M2IzMTNkNzQ3NTUyYTM1Y2M2NzcyYzciLCJpYXQiOjE2NzI2OTM4MzYsImV4cCI6MTY3MjczNzAzNn0.qlQiubPFnbCmRnhKRgnvyh8hcifLJeXbuxdZE4mZ0MU
 
 {
   "title": "what the heck 2",
