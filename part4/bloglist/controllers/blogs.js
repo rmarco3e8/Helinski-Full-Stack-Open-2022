@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router();
+const { userExtractor } = require('../utils/middleware');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
@@ -21,7 +22,7 @@ blogsRouter.get('/:id', async (request, response) => {
 });
 
 /* eslint-disable no-underscore-dangle */
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const {
     title,
     author,
@@ -47,7 +48,7 @@ blogsRouter.post('/', async (request, response) => {
 });
 /* eslint-enable no-underscore-dangle */
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const blog = await Blog.findById(request.params.id);
 
   if (blog.user.toString() !== request.user.id.toString()) {

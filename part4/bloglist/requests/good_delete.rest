@@ -1,3 +1,3 @@
-delete http://localhost:8080/api/blogs/63b350dc3aa336550a10510c
+delete http://localhost:8080/api/blogs/63b351cd2a5049176a68afca
 Content-Type: application/json
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJsb2dnZXIxIiwiaWQiOiI2M2IzMTNkNzQ3NTUyYTM1Y2M2NzcyYzciLCJpYXQiOjE2NzI2OTU0MzksImV4cCI6MTY3MjczODYzOX0.84d0LYhnebKbroDLJ739-TY_uWNWMgdrIp9aRuy489U

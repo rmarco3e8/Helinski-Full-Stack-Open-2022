@@ -9,14 +9,23 @@ const User = require('../models/user');
 const api = supertest(app);
 
 beforeEach(async () => {
+  await User.deleteMany({});
+
+  const passwordHash = await bcrypt.hash('p455w0rd', 10);
+  const user = new User({ username: 'root', name: 'bob', passwordHash });
+  await user.save();
+
   await Blog.deleteMany({});
 
-  /* eslint-disable no-restricted-syntax, no-await-in-loop */
+  /* eslint-disable no-restricted-syntax, no-await-in-loop, no-underscore-dangle */
   for (const blog of helper.initialBlogs) {
-    const blogObject = new Blog(blog);
+    const blogObject = new Blog({ ...blog, user: user._id });
     await blogObject.save();
+
+    user.blogs = user.blogs.concat(blogObject._id);
+    await user.save();
   }
-  /* eslint-enable no-restricted-syntax, no-await-in-loop */
+  /* eslint-enable no-restricted-syntax, no-await-in-loop, no-underscore-dangle */
 });
 
 test('blogs are returned as JSON', async () => {
@@ -51,9 +60,16 @@ test('a valid blog can be added', async () => {
     likes: 5,
   };
 
+  const result = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'p455w0rd' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
   await api
     .post('/api/blogs')
     .send(blogToAdd)
+    .set({ Authorization: `bearer ${result.body.token}` })
     .expect(201)
     .expect('Content-Type', /application\/json/);
 
@@ -61,10 +77,34 @@ test('a valid blog can be added', async () => {
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
   const contents = blogsAtEnd.map((blog) => {
-    const { id, ...rest } = blog;
+    const { id, user, ...rest } = blog;
     return rest;
   });
   expect(contents).toContainEqual(blogToAdd);
+});
+
+test('fails with satus code 401 if token is not provided', async () => {
+  const blogToAdd = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+    likes: 5,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(blogToAdd)
+    .expect(401)
+    .expect('Content-Type', /application\/json/);
+
+  const blogsAtEnd = await helper.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
+
+  const contents = blogsAtEnd.map((blog) => {
+    const { id, user, ...rest } = blog;
+    return rest;
+  });
+  expect(contents).not.toContainEqual(blogToAdd);
 });
 
 test('a new blog missing number of likes defaults to 0 likes', async () => {
@@ -74,9 +114,16 @@ test('a new blog missing number of likes defaults to 0 likes', async () => {
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
   };
 
+  const result = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'p455w0rd' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
   const response = await api
     .post('/api/blogs')
     .send(blogToAdd)
+    .set({ Authorization: `bearer ${result.body.token}` })
     .expect(201)
     .expect('Content-Type', /application\/json/);
 
@@ -91,9 +138,16 @@ test('a new blog missing title or url is not added', async () => {
     likes: 5,
   };
 
+  const result = await api
+    .post('/api/login')
+    .send({ username: 'root', password: 'p455w0rd' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
+
   await api
     .post('/api/blogs')
     .send(blogWithoutTitle)
+    .set({ Authorization: `bearer ${result.body.token}` })
     .expect(400);
 
   const blogWithoutURL = {
@@ -105,12 +159,13 @@ test('a new blog missing title or url is not added', async () => {
   await api
     .post('/api/blogs')
     .send(blogWithoutURL)
+    .set({ Authorization: `bearer ${result.body.token}` })
     .expect(400);
 
   const blogsAtEnd = await helper.blogsInDb();
 
   const processedBlogs = blogsAtEnd.map((blog) => {
-    const { id, ...rest } = blog;
+    const { id, user, ...rest } = blog;
     return rest;
   });
 
@@ -123,8 +178,15 @@ describe('deletion of a blog post', () => {
     const blogsAtStart = await helper.blogsInDb();
     const blogToDelete = blogsAtStart[0];
 
+    const result = await api
+      .post('/api/login')
+      .send({ username: 'root', password: 'p455w0rd' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: `bearer ${result.body.token}` })
       .expect(204);
 
     const blogsAtEnd = await helper.blogsInDb();
@@ -153,9 +215,16 @@ describe('updating a blog post', () => {
     const blogToUpdate = blogsAtStart[0];
     const { likes, ...malformedBlog } = blogToUpdate;
 
+    // const result = await api
+    //   .post('/api/login')
+    //   .send({ username: 'root', password: 'p455w0rd' })
+    //   .expect(200)
+    //   .expect('Content-Type', /application\/json/);
+
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
       .send(malformedBlog)
+      // .set({ Authorization: `bearer ${result.body.token}` })
       .expect(404);
 
     const blogsAtEnd = await helper.blogsInDb();
