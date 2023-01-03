@@ -1,0 +1,8 @@
+post http://localhost:8080/api/notes
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJtYXJjbyIsImlkIjoiNjNiMWYxMzhlYTE5ZmU4OTJmZThlOTUyIiwiaWF0IjoxNjcyNjEzNzUyfQ.RkOxvM2ph7g_r70Ap386RjhGvuqgdTzcnZ5m4pL65-I
+
+{
+  "content": "what the heck",
+  "important": false
+}
