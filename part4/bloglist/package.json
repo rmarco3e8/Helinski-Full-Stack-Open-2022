@@ -7,6 +7,10 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
+    "build:ui": "rm -rf build && cd ../../part5/bloglist_frontend && npm run build && cp -r build ../../part4/bloglist",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs",
     "lint": "eslint ."
   },
   "author": "Marco Rodrigues",
