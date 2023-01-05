@@ -1,4 +1,9 @@
-import { React, useState, useEffect } from 'react';
+import {
+  React,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import Note from './components/Note';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
@@ -28,6 +33,8 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [user, setUser] = useState(null);
 
+  const noteFormRef = useRef();
+
   useEffect(() => {
     noteService
       .getAll()
@@ -46,6 +53,7 @@ const App = () => {
   }, []);
 
   const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility();
     noteService
       .create(noteObject)
       .then((returnedNote) => {
@@ -68,27 +76,15 @@ const App = () => {
       });
   };
 
+  // const noteForm = () => (
+  //   <Togglable buttonLabel="new note" ref={noteFormRef}>
+  //     <NoteForm createNote={addNote} />
+  //   </Togglable>
+  // );
+
   const notesToShow = showAll
     ? notes
     : notes.filter((note) => note.important);
-
-  // const handleLogin = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     const newUser = await loginService.login({
-  //       username, password,
-  //     });
-  //     window.localStorage.setItem('loggedNoteappUser', JSON.stringify(newUser));
-  //     noteService.setToken(newUser.token);
-  //     setUser(newUser);
-  //     setUsername('');
-  //     setPassword('');
-  //   } catch (exception) {
-  //     setErrorMessage('Wrong credentials');
-  //     setTimeout(() => setErrorMessage(null), 5000);
-  //   }
-  // };
 
   const handleLogin = async (credentials) => {
     try {
@@ -134,10 +130,8 @@ const App = () => {
               &nbsp;
               <button type="button" onClick={handleLogout}>logout</button>
             </p>
-            <Togglable buttonLabel="new note">
-              <NoteForm
-                createNote={addNote}
-              />
+            <Togglable buttonLabel="new note" ref={noteFormRef}>
+              <NoteForm createNote={addNote} />
             </Togglable>
             <br />
           </div>
