@@ -3,6 +3,7 @@ import Note from './components/Note';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import NoteForm from './components/NoteForm';
+import Togglable from './components/Togglable';
 import noteService from './services/notes';
 import loginService from './services/login';
 import './index.css';
@@ -100,6 +101,14 @@ const App = () => {
     }
   };
 
+  const handleLogout = (event) => {
+    event.preventDefault();
+
+    window.localStorage.removeItem('loggedNoteappUser');
+    noteService.setToken(null);
+    setUser(null);
+  };
+
   const handleNoteChange = (event) => {
     setNewNote(event.target.value);
   };
@@ -112,22 +121,34 @@ const App = () => {
 
       {user === null
         ? (
-          <LoginForm
-            handleLogin={handleLogin}
-            username={username}
-            setUsername={setUsername}
-            password={password}
-            setPassword={setPassword}
-          />
+          <>
+            <Togglable buttonLabel="login">
+              <LoginForm
+                handleLogin={handleLogin}
+                username={username}
+                setUsername={setUsername}
+                password={password}
+                setPassword={setPassword}
+              />
+            </Togglable>
+            <br />
+          </>
         )
         : (
           <div>
-            <p>{`${user.name} logged-in`}</p>
-            <NoteForm
-              addNote={addNote}
-              newNote={newNote}
-              handleNoteChange={handleNoteChange}
-            />
+            <p>
+              {`${user.name} logged-in`}
+              &nbsp;
+              <button type="button" onClick={handleLogout}>logout</button>
+            </p>
+            <Togglable buttonLabel="new note">
+              <NoteForm
+                addNote={addNote}
+                newNote={newNote}
+                handleNoteChange={handleNoteChange}
+              />
+            </Togglable>
+            <br />
           </div>
         )}
 
