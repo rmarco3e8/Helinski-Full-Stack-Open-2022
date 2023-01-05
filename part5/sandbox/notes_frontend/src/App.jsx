@@ -24,11 +24,8 @@ const Footer = () => {
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -48,19 +45,11 @@ const App = () => {
     }
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteToAdd = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5,
-    };
-
+  const addNote = (noteObject) => {
     noteService
-      .create(noteToAdd)
-      .then((addedNote) => {
-        setNotes(notes.concat(addedNote));
-        setNewNote('');
+      .create(noteObject)
+      .then((returnedNote) => {
+        setNotes(notes.concat(returnedNote));
       });
   };
 
@@ -83,18 +72,30 @@ const App = () => {
     ? notes
     : notes.filter((note) => note.important);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  // const handleLogin = async (event) => {
+  //   event.preventDefault();
 
+  //   try {
+  //     const newUser = await loginService.login({
+  //       username, password,
+  //     });
+  //     window.localStorage.setItem('loggedNoteappUser', JSON.stringify(newUser));
+  //     noteService.setToken(newUser.token);
+  //     setUser(newUser);
+  //     setUsername('');
+  //     setPassword('');
+  //   } catch (exception) {
+  //     setErrorMessage('Wrong credentials');
+  //     setTimeout(() => setErrorMessage(null), 5000);
+  //   }
+  // };
+
+  const handleLogin = async (credentials) => {
     try {
-      const newUser = await loginService.login({
-        username, password,
-      });
+      const newUser = await loginService.login(credentials);
       window.localStorage.setItem('loggedNoteappUser', JSON.stringify(newUser));
       noteService.setToken(newUser.token);
       setUser(newUser);
-      setUsername('');
-      setPassword('');
     } catch (exception) {
       setErrorMessage('Wrong credentials');
       setTimeout(() => setErrorMessage(null), 5000);
@@ -109,10 +110,6 @@ const App = () => {
     setUser(null);
   };
 
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value);
-  };
-
   return (
     <>
       <h1>Notes</h1>
@@ -124,11 +121,7 @@ const App = () => {
           <>
             <Togglable buttonLabel="login">
               <LoginForm
-                handleLogin={handleLogin}
-                username={username}
-                setUsername={setUsername}
-                password={password}
-                setPassword={setPassword}
+                logInUser={handleLogin}
               />
             </Togglable>
             <br />
@@ -143,9 +136,7 @@ const App = () => {
             </p>
             <Togglable buttonLabel="new note">
               <NoteForm
-                addNote={addNote}
-                newNote={newNote}
-                handleNoteChange={handleNoteChange}
+                createNote={addNote}
               />
             </Togglable>
             <br />
