@@ -1,14 +1,22 @@
 import { React, useState, useEffect } from 'react';
 import Blog from './components/Blog';
+import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
+import BlogForm from './components/BlogForm';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import './index.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+  const [message, setMessage] = useState(null);
+  const [errorFlag, setErrorFlag] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((b) => setBlogs(b));
@@ -23,6 +31,18 @@ const App = () => {
     }
   }, []);
 
+  const resetBlogForm = () => {
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
+
+  const addMessage = (newMessage, isError) => {
+    setMessage(newMessage);
+    setErrorFlag(isError);
+    setTimeout(() => setMessage(null), 5000);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -36,7 +56,7 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      console.log('Wrong credentials');
+      addMessage('wrong username or password', true);
     }
   };
 
@@ -48,9 +68,29 @@ const App = () => {
     setUser(null);
   };
 
+  const addBlog = async (event) => {
+    event.preventDefault();
+
+    const blogToAdd = {
+      title,
+      author,
+      url,
+    };
+
+    const addedBlog = await blogService.create(blogToAdd);
+    const newMessage = `a new blog: ${addedBlog.title} by: ${addedBlog.author} added`;
+    setBlogs(blogs.concat(addedBlog));
+    addMessage(newMessage, false);
+    resetBlogForm();
+  };
+
   return (
     <>
       <h2>blogs</h2>
+      <Notification
+        message={message}
+        errorFlag={errorFlag}
+      />
       {user === null
         ? (
           <LoginForm
@@ -68,6 +108,17 @@ const App = () => {
               &nbsp;
               <button type="button" onClick={handleLogout}>logout</button>
             </p>
+            <h2>create new</h2>
+            <BlogForm
+              addBlog={addBlog}
+              title={title}
+              setTitle={setTitle}
+              author={author}
+              setAuthor={setAuthor}
+              url={url}
+              setUrl={setUrl}
+            />
+            <br />
             {blogs.map((b) => <Blog key={b.id} blog={b} />)}
           </div>
         )}
