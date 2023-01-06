@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
-
-const Blog = ({ blog }) => {
+/* eslint-disable */ 
+const Blog = ({ blog, updateBlog }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -17,6 +17,17 @@ const Blog = ({ blog }) => {
     setVisible(!visible);
   };
 
+  const addLike = () => {
+    const newBlog = { 
+      title: blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    }
+    updateBlog(blog.id, newBlog);
+  };
+
   return (
     <div style={blogStyle}>
       <div>
@@ -31,7 +42,7 @@ const Blog = ({ blog }) => {
         <div>
           {`likes ${blog.likes}`}
           &nbsp;
-          <button type="button">like</button>
+          <button type="button" onClick={addLike}>like</button>
         </div>
         <div>{blog.user.username}</div>
       </div>

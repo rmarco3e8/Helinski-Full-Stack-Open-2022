@@ -68,6 +68,11 @@ const App = () => {
     addMessage(newMessage, false);
   };
 
+  const replaceBlog = async (id, blogToUpdate) => {
+    const updatedBlog = await blogService.update(id, blogToUpdate);
+    setBlogs(blogs.map((b) => (b.id === id ? updatedBlog : b)));
+  };
+
   return (
     <>
       <h2>blogs</h2>
@@ -96,7 +101,7 @@ const App = () => {
             </Togglable>
 
             <br />
-            {blogs.map((b) => <Blog key={b.id} blog={b} />)}
+            {blogs.map((b) => <Blog key={b.id} blog={b} updateBlog={replaceBlog} />)}
           </div>
         )}
     </>

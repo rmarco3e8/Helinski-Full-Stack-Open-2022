@@ -44,6 +44,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id);
   await user.save();
 
+  await savedBlog.populate('user', { username: 1, name: 1 });
+
   return response.status(201).json(savedBlog);
 });
 /* eslint-enable no-underscore-dangle */
@@ -59,8 +61,18 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   return response.status(204).end();
 });
 
-blogsRouter.put('/:id', async (request, response) => {
-  const { likes } = request.body;
+blogsRouter.put('/:id', userExtractor, async (request, response) => {
+  const {
+    title,
+    author,
+    url,
+    likes,
+    user,
+  } = request.body;
+
+  if (user.toString() !== request.user.id.toString()) {
+    return response.status(401).json({ error: 'cannot update another user\'s blog' });
+  }
 
   if (!likes) {
     return response.status(404).send();
@@ -68,9 +80,16 @@ blogsRouter.put('/:id', async (request, response) => {
 
   const blog = await Blog.findByIdAndUpdate(
     request.params.id,
-    { likes },
+    {
+      title,
+      author,
+      url,
+      likes,
+    },
     { new: true, runValidators: true, context: 'query' },
   );
+
+  await blog.populate('user', { username: 1, name: 1 });
   return response.json(blog);
 });
 
