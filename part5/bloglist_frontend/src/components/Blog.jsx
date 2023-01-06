@@ -1,6 +1,6 @@
 import { React, useState } from 'react';
 /* eslint-disable */ 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, removeBlog, loggedUser }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -11,7 +11,13 @@ const Blog = ({ blog, updateBlog }) => {
     marginBottom: 5,
   };
 
-  const showWhenVisible = { display: visible ? '' : 'none' };
+  const showInfoWhenVisible = { display: visible ? '' : 'none' };
+
+  const showDeleteButton = { 
+    display: (loggedUser === blog.user.username)
+      ? ''
+      : 'none'
+  };
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -28,6 +34,13 @@ const Blog = ({ blog, updateBlog }) => {
     updateBlog(blog.id, newBlog);
   };
 
+  const deleteBlog = () => {
+    const prompt = `Remove blog ${blog.title} by ${blog.author}`;
+    if (window.confirm(prompt)) {
+      removeBlog(blog.id);
+    }
+  };
+
   return (
     <div style={blogStyle}>
       <div>
@@ -37,7 +50,7 @@ const Blog = ({ blog, updateBlog }) => {
           {visible ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showInfoWhenVisible}>
         <div>{blog.url}</div>
         <div>
           {`likes ${blog.likes}`}
@@ -45,6 +58,11 @@ const Blog = ({ blog, updateBlog }) => {
           <button type="button" onClick={addLike}>like</button>
         </div>
         <div>{blog.user.username}</div>
+        <div>
+          <button style={showDeleteButton} type="button" onClick={deleteBlog}>
+            remove
+          </button>
+        </div>
       </div>
     </div>
   );

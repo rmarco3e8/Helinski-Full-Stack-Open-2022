@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
-// const { userExtractor } = require('../utils/middleware');
 const User = require('../models/user');
 
 usersRouter.get('/', async (request, response) => {
@@ -10,17 +9,6 @@ usersRouter.get('/', async (request, response) => {
 
   response.json(users);
 });
-
-// usersRouter.get('/loggedUser', userExtractor, async (request, response) => {
-//   const user = await User
-//     .findById(request.user.id)
-//     .populate('user', { title: 1, author: 1 });
-//   if (user) {
-//     response.json(user);
-//   } else {
-//     response.status(404).end();
-//   }
-// });
 
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body;

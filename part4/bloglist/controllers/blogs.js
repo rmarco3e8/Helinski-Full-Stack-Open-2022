@@ -61,18 +61,18 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   return response.status(204).end();
 });
 
-blogsRouter.put('/:id', userExtractor, async (request, response) => {
+blogsRouter.put('/:id', async (request, response) => {
   const {
     title,
     author,
     url,
     likes,
-    user,
+    // user,
   } = request.body;
 
-  if (user.toString() !== request.user.id.toString()) {
-    return response.status(401).json({ error: 'cannot update another user\'s blog' });
-  }
+  // if (user.toString() !== request.user.id.toString()) {
+  //   return response.status(401).json({ error: 'cannot update another user\'s blog' });
+  // }
 
   if (!likes) {
     return response.status(404).send();

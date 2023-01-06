@@ -73,6 +73,16 @@ const App = () => {
     setBlogs(blogs.map((b) => (b.id === id ? updatedBlog : b)));
   };
 
+  const deleteBlog = async (id) => {
+    try {
+      await blogService.remove(id);
+      setBlogs(blogs.filter((b) => b.id !== id));
+    } catch (exception) {
+      console.log(exception);
+      addMessage(exception.response.data.error, true);
+    }
+  };
+
   const sortedBlogs = structuredClone(blogs).sort((blog1, blog2) => blog2.likes - blog1.likes);
 
   return (
@@ -103,7 +113,15 @@ const App = () => {
             </Togglable>
 
             <br />
-            {sortedBlogs.map((b) => <Blog key={b.id} blog={b} updateBlog={replaceBlog} />)}
+            {sortedBlogs.map((b) => (
+              <Blog
+                key={b.id}
+                blog={b}
+                updateBlog={replaceBlog}
+                removeBlog={deleteBlog}
+                loggedUser={user.username}
+              />
+            ))}
           </div>
         )}
     </>
