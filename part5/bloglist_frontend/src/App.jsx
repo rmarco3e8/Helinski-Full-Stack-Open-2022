@@ -73,6 +73,8 @@ const App = () => {
     setBlogs(blogs.map((b) => (b.id === id ? updatedBlog : b)));
   };
 
+  const sortedBlogs = structuredClone(blogs).sort((blog1, blog2) => blog2.likes - blog1.likes);
+
   return (
     <>
       <h2>blogs</h2>
@@ -101,7 +103,7 @@ const App = () => {
             </Togglable>
 
             <br />
-            {blogs.map((b) => <Blog key={b.id} blog={b} updateBlog={replaceBlog} />)}
+            {sortedBlogs.map((b) => <Blog key={b.id} blog={b} updateBlog={replaceBlog} />)}
           </div>
         )}
     </>
