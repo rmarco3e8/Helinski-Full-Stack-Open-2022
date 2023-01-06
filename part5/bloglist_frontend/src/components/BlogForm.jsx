@@ -1,15 +1,23 @@
-import React from 'react';
+import { React, useState } from 'react';
 
-const BlogForm = (props) => {
-  const {
-    addBlog,
-    title,
-    setTitle,
-    author,
-    setAuthor,
-    url,
-    setUrl,
-  } = props;
+const BlogForm = ({ createBlog }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const addBlog = (event) => {
+    event.preventDefault();
+
+    createBlog({
+      title,
+      author,
+      url,
+    });
+
+    setTitle('');
+    setAuthor('');
+    setUrl('');
+  };
 
   return (
     <form onSubmit={addBlog}>
