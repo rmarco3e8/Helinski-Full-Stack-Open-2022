@@ -76,12 +76,6 @@ const App = () => {
       });
   };
 
-  // const noteForm = () => (
-  //   <Togglable buttonLabel="new note" ref={noteFormRef}>
-  //     <NoteForm createNote={addNote} />
-  //   </Togglable>
-  // );
-
   const notesToShow = showAll
     ? notes
     : notes.filter((note) => note.important);

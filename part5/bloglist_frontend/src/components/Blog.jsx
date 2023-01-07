@@ -1,6 +1,11 @@
 import { React, useState } from 'react';
-/* eslint-disable */ 
-const Blog = ({ blog, removeBlog, loggedUser }) => {
+
+const Blog = ({
+  blog,
+  updateBlog,
+  removeBlog,
+  loggedUser,
+}) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -13,10 +18,10 @@ const Blog = ({ blog, removeBlog, loggedUser }) => {
 
   const showInfoWhenVisible = { display: visible ? '' : 'none' };
 
-  const showDeleteButton = { 
+  const showDeleteButton = {
     display: (loggedUser === blog.user.username)
       ? ''
-      : 'none'
+      : 'none',
   };
 
   const toggleVisibility = () => {
@@ -24,22 +29,24 @@ const Blog = ({ blog, removeBlog, loggedUser }) => {
   };
 
   const addLike = () => {
-    const newBlog = { 
+    const newBlog = {
       title: blog.title,
       author: blog.author,
       url: blog.url,
       likes: blog.likes + 1,
       user: blog.user.id,
-    }
+    };
     updateBlog(blog.id, newBlog);
   };
 
+  /* eslint-disable no-alert */
   const deleteBlog = () => {
     const prompt = `Remove blog ${blog.title} by ${blog.author}`;
     if (window.confirm(prompt)) {
       removeBlog(blog.id);
     }
   };
+  /* eslint-enable no-alert */
 
   return (
     <div style={blogStyle}>
