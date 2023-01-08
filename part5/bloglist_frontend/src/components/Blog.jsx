@@ -50,20 +50,20 @@ const Blog = ({
   /* eslint-enable no-alert */
 
   return (
-    <div style={blogStyle}>
-      <div>
+    <div style={blogStyle} className="blogDiv">
+      <div className="blogAlwaysVisible">
         {`${blog.title} ${blog.author}`}
         &nbsp;
         <button type="button" onClick={toggleVisibility}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
-      <div style={showInfoWhenVisible}>
+      <div style={showInfoWhenVisible} className="blogTogglableContent">
         <div>{blog.url}</div>
         <div>
           {`likes ${blog.likes}`}
           &nbsp;
-          <button type="button" onClick={addLike}>like</button>
+          <button type="button" onClick={addLike} className="likeButton">like</button>
         </div>
         <div>{blog.user.username}</div>
         <div>
@@ -78,11 +78,15 @@ const Blog = ({
 
 Blog.propTypes = {
   blog: PropTypes.shape({
-    title: PropTypes.string,
-    author: PropTypes.string,
-    url: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
     likes: PropTypes.number,
-    user: PropTypes.string,
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+    }).isRequired,
   }).isRequired,
   updateBlog: PropTypes.func.isRequired,
   removeBlog: PropTypes.func.isRequired,
