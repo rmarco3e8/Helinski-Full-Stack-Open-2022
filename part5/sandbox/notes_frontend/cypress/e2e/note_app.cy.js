@@ -28,12 +28,24 @@ describe('Note app', () => {
     cy.contains('marco polo logged-in');
   });
 
+  it('login fails with wrong password', () => {
+    cy.contains('login').click();
+    cy.get('#username').type('rmarco');
+    cy.get('#password').type('wrong');
+    cy.get('#login-button').click();
+
+    // cy.get('.error').contains('Wrong credentials');
+    cy.get('.error')
+      .should('contain', 'Wrong credentials')
+      .and('have.css', 'color', 'rgb(255, 0, 0)')
+      .and('have.css', 'border-style', 'solid');
+
+    cy.get('html').should('not.contain', 'marco polo logged-in');
+  });
+
   describe('when logged in', () => {
     beforeEach(() => {
-      cy.contains('login').click();
-      cy.get('#username').type('rmarco');
-      cy.get('#password').type('p4ssw0rd');
-      cy.get('#login-button').click();
+      cy.login({ username: 'rmarco', password: 'p4ssw0rd' });
     });
 
     it('a new note can be created', () => {
@@ -45,18 +57,15 @@ describe('Note app', () => {
 
     describe('and a note exists', () => {
       beforeEach(() => {
-        cy.contains('new note').click();
-        cy.get('#note-input').type('another note cypress');
-        cy.contains('save').click();
+        cy.createNote({ content: 'first note', important: false });
+        cy.createNote({ content: 'second note', important: false });
+        cy.createNote({ content: 'third note', important: false });
       });
 
-      it('it can be made important', () => {
-        cy.contains('another note cypress')
-          .contains('make important')
-          .click();
-
-        cy.contains('another note cypress')
-          .contains('make not important');
+      it('one of those can be made important', () => {
+        cy.contains('second note').parent().find('button').as('theButton');
+        cy.get('@theButton').click();
+        cy.get('@theButton').should('contain', 'make not important');
       });
     });
   });
