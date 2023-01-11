@@ -65,7 +65,91 @@ describe('Blog app', () => {
       });
 
       describe('and a blog exists', () => {
+        beforeEach(() => {
+          cy.createBlog({
+            title: 'boring title',
+            author: 'lame author',
+            url: 'www.lameoz.net',
+          });
+        });
 
+        it('user can like a blog', () => {
+          cy.contains('view').click();
+          cy.get('.blogDiv').contains('likes 0');
+          cy.get('.likeButton').click();
+          cy.get('.blogDiv').contains('likes 1');
+        });
+
+        it('user can delete their own blog', () => {
+          cy.contains('view').click();
+          cy.get('.blogDiv').contains('remove').click();
+          cy.get('html').should('not.contain', 'boring title lame author');
+          cy.get('.blogDiv').should('not.exist');
+        });
+
+        it('user can\'t delete a blog that isn\'t theirs', () => {
+          cy.request(
+            'POST',
+            'http://localhost:8080/api/users',
+            {
+              name: 'wumbo wilson',
+              username: 'bigWumb',
+              password: 'swag4days',
+            },
+          );
+          cy.contains('logout').click();
+          cy.login({ username: 'bigWumb', password: 'swag4days' });
+          cy.contains('view').click();
+          cy.get('.blogDiv').contains('rmarco');
+          cy.get('.blogDiv').contains('remove').should('not.be.visible');
+        });
+      });
+
+      describe('and multiple blogs exist', () => {
+        beforeEach(() => {
+          cy.createBlog({
+            title: 'title with 0 likes',
+            author: 'count alot',
+            url: 'www.math.gov',
+          });
+          cy.createBlog({
+            title: 'title with 2 likes',
+            author: 'count alot',
+            url: 'www.math.gov',
+          });
+          cy.createBlog({
+            title: 'title with 1 likes',
+            author: 'count alot',
+            url: 'www.math.gov',
+          });
+          cy.createBlog({
+            title: 'title with 3 likes',
+            author: 'count alot',
+            url: 'www.math.gov',
+          });
+        });
+
+        it('blogs are ordered by likes, greatest to least', () => {
+          cy.contains('title with 2 likes').parent().as('blog-2-like');
+          cy.get('@blog-2-like').contains('view').click();
+          cy.get('@blog-2-like').find('.likeButton').click();
+          cy.get('@blog-2-like').find('.likeButton').click();
+
+          cy.contains('title with 1 likes').parent().as('blog-1-like');
+          cy.get('@blog-1-like').contains('view').click();
+          cy.get('@blog-1-like').find('.likeButton').click();
+
+          cy.contains('title with 3 likes').parent().as('blog-3-like');
+          cy.get('@blog-3-like').contains('view').click();
+          cy.get('@blog-3-like').find('.likeButton').click();
+          cy.get('@blog-3-like').find('.likeButton').click();
+          cy.get('@blog-3-like').find('.likeButton').click();
+
+          cy.get('.blogDiv').eq(0).should('contain', 'title with 3 likes');
+          cy.get('.blogDiv').eq(1).should('contain', 'title with 2 likes');
+          cy.get('.blogDiv').eq(2).should('contain', 'title with 1 likes');
+          cy.get('.blogDiv').eq(3).should('contain', 'title with 0 likes');
+        });
       });
     });
   });
