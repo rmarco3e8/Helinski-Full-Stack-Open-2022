@@ -1,5 +1,5 @@
-import noteReducer from './noteReducer';
 import deepFreeze from 'deep-freeze';
+import noteReducer from './noteReducer';
 
 describe('noteReducer', () => {
   test('returns new state with action NEW_NOTE', () => {
@@ -33,11 +33,11 @@ describe('noteReducer', () => {
         id: 2,
       },
     ];
-  
+
     const action = {
       type: 'TOGGLE_IMPORTANCE',
       data: {
-        id: 2
+        id: 2,
       },
     };
 
