@@ -16,7 +16,8 @@ const Anecdote = ({ anecdote, handleClick }) => (
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
-  const anecdotes = useSelector((state) => state);
+  const anecdotes = useSelector((state) => state.anecdotes);
+  console.log(anecdotes);
   const sortedAnecdotes = structuredClone(anecdotes).sort((a1, a2) => a2.votes - a1.votes);
 
   return (
