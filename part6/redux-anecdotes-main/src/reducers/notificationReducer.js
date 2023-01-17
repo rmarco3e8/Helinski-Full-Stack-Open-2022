@@ -9,11 +9,9 @@ const notificationSlice = createSlice({
     setNotification(state, action) {
       return action.payload;
     },
-    /* eslint-disable no-unused-vars */
     removeNotification() {
       return null;
     },
-    /* eslint-enable no-unused-vars */
   },
 });
 
