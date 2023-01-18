@@ -20,7 +20,7 @@ const AnecdoteList = () => {
 
   const anecdotes = useSelector((state) => state.anecdotes);
   const filter = useSelector((state) => state.filter);
-
+  /* eslint-disable */
   const filteredAnecdotes = anecdotes.filter((a) => a.content.toLowerCase().includes(filter));
   const sortedAnecdotes = structuredClone(filteredAnecdotes).sort((a1, a2) => a2.votes - a1.votes);
 
