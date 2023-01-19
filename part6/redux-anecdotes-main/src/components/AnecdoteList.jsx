@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addVoteTo } from '../reducers/anecdoteReducer';
-import { setNotification, removeNotification } from '../reducers/notificationReducer';
+import { sendNotification } from '../reducers/notificationReducer';
 
 const Anecdote = ({ anecdote, handleClick }) => (
   <div key={anecdote.id}>
@@ -25,9 +25,8 @@ const AnecdoteList = () => {
   const sortedAnecdotes = structuredClone(filteredAnecdotes).sort((a1, a2) => a2.votes - a1.votes);
 
   const addVote = (anecdote) => {
-    dispatch(addVoteTo(anecdote.id));
-    dispatch(setNotification(`you voted '${anecdote.content}'`));
-    setTimeout(() => dispatch(removeNotification()), 5000);
+    dispatch(addVoteTo(anecdote));
+    dispatch(sendNotification(`you voted '${anecdote.content}'`, 5));
   };
 
   return (

@@ -1,82 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-/* eslint-disable max-len */
-
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
-];
-
-/* eslint-disable max-len */
-
-const getId = () => (100000 * Math.random()).toFixed(0);
-
-const asObject = (anecdote) => (
-  {
-    content: anecdote,
-    id: getId(),
-    votes: 0,
-  }
-);
-
-const initialState = anecdotesAtStart.map(asObject);
-
-// export const createAnecdote = (anecdote) => (
-//   {
-//     type: 'NEW_ANECDOTE',
-//     data: asObject(anecdote),
-//   }
-// );
-
-// export const addVoteTo = (id) => (
-//   {
-//     type: 'ADD_VOTE',
-//     data: { id },
-//   }
-// );
-
-// const reducer = (state = initialState, action = 'DO_NOTHING') => {
-//   // console.log('state now: ', state);
-//   // console.log('action', action);
-
-//   switch (action.type) {
-//     case 'NEW_ANECDOTE': {
-//       return state.concat(action.data);
-//     }
-//     case 'ADD_VOTE': {
-//       const { id } = action.data;
-//       const anecdoteToChange = state.find((a) => a.id === id);
-//       const changedAnecdote = {
-//         ...anecdoteToChange,
-//         votes: anecdoteToChange.votes + 1,
-//       };
-//       return state.map((a) => (a.id !== id ? a : changedAnecdote));
-//     }
-//     default: {
-//       return state;
-//     }
-//   }
-// };
+import anecdoteService from '../services/anecdotes';
 
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
-  initialState,
+  initialState: [],
   reducers: {
-    createAnecdote(state, action) {
+    appendAnecdote(state, action) {
       state.push(action.payload);
     },
-    addVoteTo(state, action) {
-      const id = action.payload;
-      const anecdoteToChange = state.find((a) => a.id === id);
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1,
-      };
-      return state.map((a) => (a.id !== id ? a : changedAnecdote));
+    updateAnecdote(state, action) {
+      const updatedAnecdote = action.payload;
+      return state.map((a) => (a.id === updatedAnecdote.id ? updatedAnecdote : a));
     },
     setAnecdotes(state, action) {
       return action.payload;
@@ -84,5 +18,29 @@ const anecdoteSlice = createSlice({
   },
 });
 
-export const { createAnecdote, addVoteTo, setAnecdotes } = anecdoteSlice.actions;
+export const { appendAnecdote, updateAnecdote, setAnecdotes } = anecdoteSlice.actions;
+
+export const initializeAnecdotes = () => (
+  async (dispatch) => {
+    const anecdotes = await anecdoteService.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  }
+);
+
+export const createAnecdote = (content) => (
+  async (dispatch) => {
+    const newAnecdote = await anecdoteService.create(content);
+    dispatch(appendAnecdote(newAnecdote));
+  }
+);
+
+export const addVoteTo = (anecdote) => (
+  async (dispatch) => {
+    const { id } = anecdote;
+    const updatedAnecdote = { ...anecdote, votes: anecdote.votes + 1 };
+    await anecdoteService.update(id, updatedAnecdote);
+    dispatch(updateAnecdote(updatedAnecdote));
+  }
+);
+
 export default anecdoteSlice.reducer;
