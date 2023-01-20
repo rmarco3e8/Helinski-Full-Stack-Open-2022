@@ -1,11 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { createAnecdote } from '../reducers/anecdoteReducer';
 import { sendNotification } from '../reducers/notificationReducer';
 
-const AnecdoteForm = () => {
-  const dispatch = useDispatch();
-
+/* eslint-disable react/destructuring-assignment */
+const AnecdoteForm = (props) => {
   /* eslint-disable no-param-reassign */
   const addAnecdote = async (event) => {
     event.preventDefault();
@@ -13,9 +12,9 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value;
     event.target.anecdote.value = '';
 
-    dispatch(createAnecdote(content));
+    props.createAnecdote(content);
 
-    dispatch(sendNotification(`you added '${content}'`, 5));
+    props.sendNotification(`you added '${content}'`, 5);
   };
   /* eslint-enable no-param-reassign */
 
@@ -29,5 +28,9 @@ const AnecdoteForm = () => {
     </>
   );
 };
+/* eslint-enable react/destructuring-assignment */
 
-export default AnecdoteForm;
+export default connect(
+  null,
+  { createAnecdote, sendNotification },
+)(AnecdoteForm);

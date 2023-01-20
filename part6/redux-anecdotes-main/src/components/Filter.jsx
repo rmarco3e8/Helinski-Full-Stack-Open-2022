@@ -1,15 +1,13 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { setFilter } from '../reducers/filterReducer';
 
-const Filter = () => {
-  const dispatch = useDispatch();
-
+/* eslint-disable react/destructuring-assignment */
+const Filter = (props) => {
   const handleChange = (event) => {
     event.preventDefault();
-    // input-field value is in variable event.target.value
     const filter = event.target.value;
-    dispatch(setFilter(filter));
+    props.setFilter(filter);
   };
 
   const style = {
@@ -22,5 +20,9 @@ const Filter = () => {
     </div>
   );
 };
+/* eslint-enable react/destructuring-assignment */
 
-export default Filter;
+export default connect(
+  null,
+  { setFilter },
+)(Filter);

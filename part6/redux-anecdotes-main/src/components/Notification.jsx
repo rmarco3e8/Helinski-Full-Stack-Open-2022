@@ -1,9 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
-const Notification = () => {
-  const message = useSelector((state) => state.message);
-
+const Notification = ({ message }) => {
   if (message === null) {
     return null;
   }
@@ -20,4 +18,7 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default connect(
+  (state) => ({ message: state.message }),
+  null,
+)(Notification);
