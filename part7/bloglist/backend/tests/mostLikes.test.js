@@ -136,6 +136,8 @@ describe('author with most likes', () => {
         likes: 17,
       },
     ];
-    expect(authorsWithMostLikes).toContainEqual(mostLikes(listOfMultipleBlogsWithTie));
+    expect(authorsWithMostLikes).toContainEqual(
+      mostLikes(listOfMultipleBlogsWithTie)
+    );
   });
 });

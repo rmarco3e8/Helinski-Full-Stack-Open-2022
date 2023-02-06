@@ -1,12 +1,7 @@
 import { React, useState } from 'react';
 import PropTypes from 'prop-types';
 
-const Blog = ({
-  blog,
-  updateBlog,
-  removeBlog,
-  loggedUser,
-}) => {
+const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -20,9 +15,7 @@ const Blog = ({
   const showInfoWhenVisible = { display: visible ? '' : 'none' };
 
   const showDeleteButton = {
-    display: (loggedUser === blog.user.username)
-      ? ''
-      : 'none',
+    display: loggedUser === blog.user.username ? '' : 'none',
   };
 
   const toggleVisibility = () => {
@@ -63,7 +56,9 @@ const Blog = ({
         <div>
           {`likes ${blog.likes}`}
           &nbsp;
-          <button type="button" onClick={addLike} className="likeButton">like</button>
+          <button type="button" onClick={addLike} className="likeButton">
+            like
+          </button>
         </div>
         <div>{blog.user.username}</div>
         <div>

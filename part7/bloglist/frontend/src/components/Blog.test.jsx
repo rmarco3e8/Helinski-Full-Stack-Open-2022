@@ -24,12 +24,14 @@ describe('<Blog />', () => {
     const mockDeleteBlog = jest.fn();
     const mockUsername = 'BillyCornholio';
 
-    container = render(<Blog
-      blog={blog}
-      updateBlog={mockReplaceBlog}
-      removeBlog={mockDeleteBlog}
-      loggedUser={mockUsername}
-    />).container;
+    container = render(
+      <Blog
+        blog={blog}
+        updateBlog={mockReplaceBlog}
+        removeBlog={mockDeleteBlog}
+        loggedUser={mockUsername}
+      />
+    ).container;
   });
 
   test('at start displays title and author, but not URL or likes', async () => {

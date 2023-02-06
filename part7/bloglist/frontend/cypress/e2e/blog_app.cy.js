@@ -87,16 +87,12 @@ describe('Blog app', () => {
           cy.get('.blogDiv').should('not.exist');
         });
 
-        it('user can\'t delete a blog that isn\'t theirs', () => {
-          cy.request(
-            'POST',
-            'http://localhost:8080/api/users',
-            {
-              name: 'wumbo wilson',
-              username: 'bigWumb',
-              password: 'swag4days',
-            },
-          );
+        it("user can't delete a blog that isn't theirs", () => {
+          cy.request('POST', 'http://localhost:8080/api/users', {
+            name: 'wumbo wilson',
+            username: 'bigWumb',
+            password: 'swag4days',
+          });
           cy.contains('logout').click();
           cy.login({ username: 'bigWumb', password: 'swag4days' });
           cy.contains('view').click();

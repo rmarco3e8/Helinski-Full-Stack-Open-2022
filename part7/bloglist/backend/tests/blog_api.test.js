@@ -320,7 +320,9 @@ describe('when there is initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain('username must be at least 3 characters long');
+    expect(result.body.error).toContain(
+      'username must be at least 3 characters long'
+    );
 
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toEqual(usersAtStart);
@@ -361,7 +363,9 @@ describe('when there is initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/);
 
-    expect(result.body.error).toContain('password must be at least 3 characters long');
+    expect(result.body.error).toContain(
+      'password must be at least 3 characters long'
+    );
 
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd).toEqual(usersAtStart);

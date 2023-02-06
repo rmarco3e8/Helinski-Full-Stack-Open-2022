@@ -5,15 +5,9 @@ const Notification = ({ message, errorFlag }) => {
   if (message === null) {
     return null;
   }
-  const className = (errorFlag)
-    ? 'error'
-    : 'success';
+  const className = errorFlag ? 'error' : 'success';
 
-  return (
-    <div className={className}>
-      { message }
-    </div>
-  );
+  return <div className={className}>{message}</div>;
 };
 
 Notification.propTypes = {

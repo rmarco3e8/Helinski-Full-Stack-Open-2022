@@ -52,7 +52,9 @@ const BlogForm = ({ createBlog }) => {
           id="url-input"
         />
       </div>
-      <button id="submit-blog" type="submit">create</button>
+      <button id="submit-blog" type="submit">
+        create
+      </button>
     </form>
   );
 };

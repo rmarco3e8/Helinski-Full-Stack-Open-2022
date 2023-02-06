@@ -130,6 +130,8 @@ describe('author with most blogs', () => {
         blogs: 2,
       },
     ];
-    expect(authorsWithMostBlogs).toContainEqual(mostBlogs(listOfMultipleBlogsWithTie));
+    expect(authorsWithMostBlogs).toContainEqual(
+      mostBlogs(listOfMultipleBlogsWithTie)
+    );
   });
 });

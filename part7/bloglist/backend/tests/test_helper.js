@@ -18,14 +18,12 @@ const initialBlogs = [
 
 /* eslint-disable no-param-reassign, no-underscore-dangle */
 const nonExistingId = async () => {
-  const blog = new Blog(
-    {
-      title: 'will delete soon',
-      author: 'jeff',
-      url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
-      likes: 10,
-    },
-  );
+  const blog = new Blog({
+    title: 'will delete soon',
+    author: 'jeff',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.html',
+    likes: 10,
+  });
   blog.save();
   blog.remove();
   return blog._id.toString();
@@ -43,5 +41,8 @@ const usersInDb = async () => {
 };
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb, usersInDb,
+  initialBlogs,
+  nonExistingId,
+  blogsInDb,
+  usersInDb,
 };

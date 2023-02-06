@@ -11,9 +11,7 @@ describe('<BlogForm />', () => {
   beforeEach(() => {
     mockCreateBlog = jest.fn();
 
-    container = render(<BlogForm
-      createBlog={mockCreateBlog}
-    />).container;
+    container = render(<BlogForm createBlog={mockCreateBlog} />).container;
   });
 
   test('calls createBlog with right details when new blog is created', async () => {
