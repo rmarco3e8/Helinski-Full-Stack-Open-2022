@@ -1,4 +1,5 @@
 import { React, useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
@@ -6,13 +7,21 @@ import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import { sendNotification } from './reducers/notificationReducer';
 import './index.css';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [errorFlag, setErrorFlag] = useState(false);
+  // const [message, setMessage] = useState(null);
+  const message = useSelector((state) => state.notification.message);
+  // const [errorFlag, setErrorFlag] = useState(false);
+  const errorFlag = useSelector((state) => state.notification.errorFlag);
+
+  const dispatch = useDispatch();
+
+  console.log(message);
+  console.log(errorFlag);
 
   const blogFormRef = useRef();
 
@@ -29,11 +38,11 @@ const App = () => {
     }
   }, []);
 
-  const addMessage = (newMessage, isError) => {
-    setMessage(newMessage);
-    setErrorFlag(isError);
-    setTimeout(() => setMessage(null), 5000);
-  };
+  // const addMessage = (newMessage, isError) => {
+  //   setMessage(newMessage);
+  //   setErrorFlag(isError);
+  //   setTimeout(() => setMessage(null), 5000);
+  // };
 
   const handleLogin = async (credentials) => {
     try {
@@ -42,7 +51,8 @@ const App = () => {
       blogService.setToken(newUser.token);
       setUser(newUser);
     } catch (exception) {
-      addMessage('wrong username or password', true);
+      dispatch(sendNotification('wrong username or password', true, 5));
+      console.log('HERE');
     }
   };
 
@@ -60,7 +70,7 @@ const App = () => {
     const addedBlog = await blogService.create(blogToAdd);
     const newMessage = `a new blog: ${addedBlog.title} by: ${addedBlog.author} added`;
     setBlogs(blogs.concat(addedBlog));
-    addMessage(newMessage, false);
+    dispatch(sendNotification(newMessage, false, 5));
   };
 
   const replaceBlog = async (id, blogToUpdate) => {
@@ -74,7 +84,7 @@ const App = () => {
       setBlogs(blogs.filter((b) => b.id !== id));
     } catch (exception) {
       console.log(exception);
-      addMessage(exception.response.data.error, true);
+      dispatch(sendNotification(exception.response.data.error, true, 5));
     }
   };
 
