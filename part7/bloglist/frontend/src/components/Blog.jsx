@@ -1,7 +1,11 @@
 import { React, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { addLikeTo } from '../reducers/blogReducer';
 
-const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
+const Blog = ({ blog, removeBlog, loggedUser }) => {
+  const dispatch = useDispatch();
+
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -22,15 +26,8 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
     setVisible(!visible);
   };
 
-  const addLike = () => {
-    const newBlog = {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1,
-      user: blog.user.id,
-    };
-    updateBlog(blog.id, newBlog);
+  const addLike = async () => {
+    dispatch(addLikeTo(blog));
   };
 
   /* eslint-disable no-alert */
@@ -83,7 +80,6 @@ Blog.propTypes = {
       username: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  updateBlog: PropTypes.func.isRequired,
   removeBlog: PropTypes.func.isRequired,
   loggedUser: PropTypes.string.isRequired,
 };

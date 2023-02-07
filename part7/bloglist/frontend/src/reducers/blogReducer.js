@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../services/blogs';
+import { sendNotification } from './notificationReducer';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -15,10 +16,14 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return action.payload;
     },
+    deleteBlog(state, action) {
+      return state.filter((b) => b.id !== action.payload);
+    },
   },
 });
 
-export const { appendBlog, updateBlog, setBlogs } = blogSlice.actions;
+export const { appendBlog, updateBlog, setBlogs, deleteBlog } =
+  blogSlice.actions;
 
 export const initializeBlogs = () => async (dispatch) => {
   const blogs = await blogService.getAll();
@@ -27,13 +32,30 @@ export const initializeBlogs = () => async (dispatch) => {
 
 export const createBlog = (blogObject) => async (dispatch) => {
   const newBlog = await blogService.create(blogObject);
+  const newMessage = `a new blog: ${newBlog.title} by: ${newBlog.author} added`;
+
   dispatch(appendBlog(newBlog));
+  dispatch(sendNotification(newMessage, false, 5));
+};
+
+export const removeBlog = (id) => async (dispatch) => {
+  try {
+    await blogService.remove(id);
+    dispatch(deleteBlog(id));
+  } catch (exception) {
+    console.log(exception);
+    dispatch(sendNotification(exception.response.data.error, true, 5));
+  }
 };
 
 export const addLikeTo = (blog) => async (dispatch) => {
   const { id } = blog;
-  const updatedBlog = { ...blog, likes: blog.likes + 1 };
-  await blogService.update(id, updatedBlog);
+  const replacementBlog = {
+    ...blog,
+    likes: blog.likes + 1,
+    user: blog.user.id,
+  };
+  const updatedBlog = await blogService.update(id, replacementBlog);
   dispatch(updateBlog(updatedBlog));
 };
 
