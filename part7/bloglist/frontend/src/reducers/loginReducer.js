@@ -1,40 +1,47 @@
-// import { createSlice } from '@reduxjs/toolkit';
-// import loginService from '../services/blogs';
+import { createSlice } from '@reduxjs/toolkit';
+import loginService from '../services/login';
+import blogService from '../services/blogs';
+import { sendNotification } from './notificationReducer';
 
-// const blogSlice = createSlice({
-//   name: 'blogs',
-//   initialState: [],
-//   reducers: {
-//     appendBlog(state, action) {
-//       state.push(action.payload);
-//     },
-//     updateBlog(state, action) {
-//       const updatedBlog = action.payload;
-//       return state.map((b) => (b.id === updatedBlog.id ? updatedBlog : b));
-//     },
-//     setBlogs(state, action) {
-//       return action.payload;
-//     },
-//   },
-// });
+const loginSlice = createSlice({
+  name: 'user',
+  initialState: null,
+  reducers: {
+    setUser(state, action) {
+      return action.payload;
+    },
+    removeUser() {
+      return null;
+    },
+  },
+});
 
-// export const { appendBlog, updateBlog, setBlogs } = blogSlice.actions;
+export const { setUser, removeUser } = loginSlice.actions;
 
-// export const initializeBlogs = () => async (dispatch) => {
-//   const blogs = await blogService.getAll();
-//   dispatch(setBlogs(blogs));
-// };
+export const logInUser = (credentials) => async (dispatch) => {
+  try {
+    const newUser = await loginService.login(credentials);
+    window.localStorage.setItem('loggedBlogappUser', JSON.stringify(newUser));
+    blogService.setToken(newUser.token);
+    dispatch(setUser(newUser));
+  } catch (exception) {
+    dispatch(sendNotification('wrong username or password', true, 5));
+  }
+};
 
-// export const createBlog = (blogObject) => async (dispatch) => {
-//   const newBlog = await blogService.create(blogObject);
-//   dispatch(appendBlog(newBlog));
-// };
+export const logOutUser = () => async (dispatch) => {
+  window.localStorage.removeItem('loggedBlogappUser');
+  blogService.setToken(null);
+  dispatch(removeUser());
+};
 
-// export const addLikeTo = (blog) => async (dispatch) => {
-//   const { id } = blog;
-//   const updatedBlog = { ...blog, likes: blog.likes + 1 };
-//   await blogService.update(id, updatedBlog);
-//   dispatch(updateBlog(updatedBlog));
-// };
+export const initializeUser = () => async (dispatch) => {
+  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser');
+  if (loggedUserJSON) {
+    const loggedUser = JSON.parse(loggedUserJSON);
+    dispatch(setUser(loggedUser));
+    blogService.setToken(loggedUser.token);
+  }
+};
 
-// export default blogSlice.reducer;
+export default loginSlice.reducer;
