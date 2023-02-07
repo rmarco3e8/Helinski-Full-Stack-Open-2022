@@ -1,9 +1,9 @@
 import { React, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { addLikeTo } from '../reducers/blogReducer';
+import { addLikeTo, removeBlog } from '../reducers/blogReducer';
 
-const Blog = ({ blog, removeBlog, loggedUser }) => {
+const Blog = ({ blog, loggedUser }) => {
   const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
@@ -31,10 +31,10 @@ const Blog = ({ blog, removeBlog, loggedUser }) => {
   };
 
   /* eslint-disable no-alert */
-  const deleteBlog = () => {
+  const deleteBlog = async () => {
     const prompt = `Remove blog ${blog.title} by ${blog.author}`;
     if (window.confirm(prompt)) {
-      removeBlog(blog.id);
+      dispatch(removeBlog(blog.id));
     }
   };
   /* eslint-enable no-alert */
@@ -80,7 +80,6 @@ Blog.propTypes = {
       username: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  removeBlog: PropTypes.func.isRequired,
   loggedUser: PropTypes.string.isRequired,
 };
 
