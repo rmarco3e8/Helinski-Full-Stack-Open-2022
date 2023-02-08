@@ -2,4 +2,4 @@ node_modules
 build
 .eslintrc.js
 .env
-db,json
+db.json
