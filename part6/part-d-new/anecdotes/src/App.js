@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getAnecdotes, updateAnecdote, createAnecdote } from './requests';
+import { useNotificationDispatch } from './NotificationContext';
 
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
@@ -11,6 +12,19 @@ const App = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData('anecdotes');
       queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote));
+
+      const message = `anecdote '${newAnecdote.content}' voted`;
+      notificationDispatch({ type: 'setNotification', payload: message });
+      setTimeout(() => {
+        notificationDispatch({ type: 'removeNotification' });
+      }, 5000);
+    },
+    onError: (object) => {
+      const message = object.response.data.error;
+      notificationDispatch({ type: 'setNotification', payload: message });
+      setTimeout(() => {
+        notificationDispatch({ type: 'removeNotification' });
+      }, 5000);
     },
   });
 
@@ -25,6 +39,8 @@ const App = () => {
       );
     },
   });
+
+  const notificationDispatch = useNotificationDispatch();
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
