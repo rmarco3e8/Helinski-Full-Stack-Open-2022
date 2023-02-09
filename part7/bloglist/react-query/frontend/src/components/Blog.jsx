@@ -1,11 +1,8 @@
 import { React, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { addLikeTo, removeBlog } from '../reducers/blogReducer';
+// import blogService from '../services/blogs';
 
-const Blog = ({ blog, loggedUser }) => {
-  const dispatch = useDispatch();
-
+const Blog = ({ blog, loggedUser, updateBlogMutation, removeBlogMutation }) => {
   const [visible, setVisible] = useState(false);
 
   const blogStyle = {
@@ -27,14 +24,20 @@ const Blog = ({ blog, loggedUser }) => {
   };
 
   const addLike = async () => {
-    dispatch(addLikeTo(blog));
+    const { id } = blog;
+    const replacementBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id,
+    };
+    updateBlogMutation.mutate([id, replacementBlog]);
   };
 
   /* eslint-disable no-alert */
   const deleteBlog = async () => {
     const prompt = `Remove blog ${blog.title} by ${blog.author}`;
     if (window.confirm(prompt)) {
-      dispatch(removeBlog(blog.id));
+      removeBlogMutation.mutate(blog.id);
     }
   };
   /* eslint-enable no-alert */
@@ -53,7 +56,11 @@ const Blog = ({ blog, loggedUser }) => {
         <div>
           {`likes ${blog.likes}`}
           &nbsp;
-          <button type="button" onClick={addLike} className="likeButton">
+          <button
+            type="button"
+            onClick={() => addLike(blog)}
+            className="likeButton"
+          >
             like
           </button>
         </div>

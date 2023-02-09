@@ -1,6 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { getAnecdotes, updateAnecdote, createAnecdote } from './requests';
-import { useNotificationDispatch } from './NotificationContext';
+import {
+  useNotificationDispatch,
+  useSendNotification,
+} from './NotificationContext';
 
 import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
@@ -13,11 +16,13 @@ const App = () => {
       const anecdotes = queryClient.getQueryData('anecdotes');
       queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote));
 
-      const message = `anecdote '${newAnecdote.content}' voted`;
-      notificationDispatch({ type: 'setNotification', payload: message });
-      setTimeout(() => {
-        notificationDispatch({ type: 'removeNotification' });
-      }, 5000);
+      const message = `anecdote '${newAnecdote.content}' created!`;
+      // console.log(notificationDispatch);
+      sendNotification(message, 5);
+      // notificationDispatch({ type: 'setNotification', payload: message });
+      // setTimeout(() => {
+      //   notificationDispatch({ type: 'removeNotification' });
+      // }, 5000);
     },
     onError: (object) => {
       const message = object.response.data.error;
@@ -41,6 +46,7 @@ const App = () => {
   });
 
   const notificationDispatch = useNotificationDispatch();
+  const sendNotification = useSendNotification();
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });

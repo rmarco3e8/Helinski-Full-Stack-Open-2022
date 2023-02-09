@@ -1,11 +1,17 @@
-import { createContext, useReducer, useContext } from 'react';
+import React, { createContext, useReducer, useContext } from 'react';
+
+const initialState = {
+  message: null,
+  errorFlag: false,
+};
+let timeout = null;
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
     case 'setNotification':
       return action.payload;
     case 'removeNotification':
-      return null;
+      return { message: null, errorFlag: false };
     default:
       return state;
   }
@@ -13,17 +19,18 @@ const notificationReducer = (state, action) => {
 
 const NotificationContext = createContext();
 
-export const NotificationContextProvider = (props) => {
+export const NotificationContextProvider = ({ children }) => {
   const [notification, notificationDispatch] = useReducer(
     notificationReducer,
-    null
+    initialState
   );
-
+  /* eslint-disable react/jsx-no-constructed-context-values */
   return (
     <NotificationContext.Provider value={[notification, notificationDispatch]}>
-      {props.children}
+      {children}
     </NotificationContext.Provider>
   );
+  /* eslint-enable react/jsx-no-constructed-context-values */
 };
 
 export const useNotificationValue = () => {
@@ -36,13 +43,11 @@ export const useNotificationDispatch = () => {
   return notificationAndDispatch[1];
 };
 
-let timeout = null;
-// test for part 7
 export const useSendNotification = () => {
   const dispatch = useNotificationDispatch();
-  return async (message, seconds) => {
+  return async (message, errorFlag, seconds) => {
     clearTimeout(timeout);
-    dispatch({ type: 'setNotification', payload: message });
+    dispatch({ type: 'setNotification', payload: { message, errorFlag } });
     timeout = setTimeout(() => {
       dispatch({ type: 'removeNotification' });
     }, seconds * 1000);
