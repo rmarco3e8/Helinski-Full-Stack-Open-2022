@@ -1,10 +1,14 @@
 import { React, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
+import Menu from './components/Menu';
+import UsersView from './components/UsersView';
 import { initializeBlogs, createBlog } from './reducers/blogReducer';
 import { logOutUser, initializeUser } from './reducers/loginReducer';
 import './index.css';
@@ -51,15 +55,26 @@ const App = () => {
               logout
             </button>
           </p>
-          <h2>create new</h2>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
+          <Menu />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div>
+                  <h2>create new</h2>
+                  <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                    <BlogForm createBlog={addBlog} />
+                  </Togglable>
 
-          <br />
-          {sortedBlogs.map((b) => (
-            <Blog key={b.id} blog={b} loggedUser={user.username} />
-          ))}
+                  <br />
+                  {sortedBlogs.map((b) => (
+                    <Blog key={b.id} blog={b} loggedUser={user.username} />
+                  ))}
+                </div>
+              }
+            />
+            <Route path="/users" element={<UsersView blogs={blogs} />} />
+          </Routes>
         </div>
       )}
     </>
