@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import blogService from '../services/blogs';
 import { sendNotification } from './notificationReducer';
+import { initializeUsers } from './usersReducer';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -36,12 +37,14 @@ export const createBlog = (blogObject) => async (dispatch) => {
 
   dispatch(appendBlog(newBlog));
   dispatch(sendNotification(newMessage, false, 5));
+  dispatch(initializeUsers());
 };
 
 export const removeBlog = (id) => async (dispatch) => {
   try {
     await blogService.remove(id);
     dispatch(deleteBlog(id));
+    dispatch(initializeUsers());
   } catch (exception) {
     console.log(exception);
     dispatch(sendNotification(exception.response.data.error, true, 5));
