@@ -1,17 +1,22 @@
 import { React } from 'react';
 // import PropTypes from 'prop-types';
 
-const SingleUserView = ({ user }) => (
-  <>
-    <h1>{user.name}</h1>
-    <h2>added blogs</h2>
-    <ul>
-      {user.blogs.map((b) => (
-        <li>{b.title}</li>
-      ))}
-    </ul>
-  </>
-);
+const SingleUserView = ({ user }) => {
+  if (!user) {
+    return null;
+  }
+  return (
+    <>
+      <h1>{user.name}</h1>
+      <h2>added blogs</h2>
+      <ul>
+        {user.blogs.map((b) => (
+          <li>{b.title}</li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 // UserView.propTypes = {
 //   blogs: PropTypes.shape({
