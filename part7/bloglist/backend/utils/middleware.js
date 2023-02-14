@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const logger = require('./logger');
 
 const requestLogger = (request, response, next) => {
@@ -11,6 +12,10 @@ const requestLogger = (request, response, next) => {
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' });
+};
+
+const catchAll = (request, response) => {
+  response.status(200).sendFile(path.resolve('./build', 'index.html'));
 };
 
 const errorHandler = (error, request, response, next) => {
@@ -62,6 +67,7 @@ const userExtractor = (request, response, next) => {
 module.exports = {
   requestLogger,
   unknownEndpoint,
+  catchAll,
   errorHandler,
   tokenExtractor,
   userExtractor,

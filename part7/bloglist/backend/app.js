@@ -40,7 +40,8 @@ if (process.env.NODE_ENV === 'test') {
 }
 /* eslint-enable global-require */
 
-app.use(middleware.unknownEndpoint);
+app.use('api/*', middleware.unknownEndpoint);
+app.use('*', middleware.catchAll);
 app.use(middleware.errorHandler);
 
 module.exports = app;
