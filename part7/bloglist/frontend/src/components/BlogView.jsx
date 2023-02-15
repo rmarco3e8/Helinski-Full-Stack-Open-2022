@@ -47,6 +47,12 @@ const SingleBlogView = ({ blog, loggedUser }) => {
           remove
         </button>
       </div>
+      <h2>comments</h2>
+      <ul>
+        {!blog.comments
+          ? null
+          : blog.comments.map((comment) => <li>{comment}</li>)}
+      </ul>
     </>
   );
 };

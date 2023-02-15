@@ -22,7 +22,7 @@ blogsRouter.get('/:id', async (request, response) => {
 
 /* eslint-disable no-underscore-dangle */
 blogsRouter.post('/', userExtractor, async (request, response) => {
-  const { title, author, url, likes } = request.body;
+  const { title, author, url, likes, comments } = request.body;
 
   const user = await User.findById(request.user.id);
 
@@ -32,6 +32,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
     url,
     likes: likes || 0,
     user: user._id,
+    comments: comments || [],
   });
 
   const savedBlog = await blog.save();
@@ -58,13 +59,7 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
 });
 
 blogsRouter.put('/:id', async (request, response) => {
-  const {
-    title,
-    author,
-    url,
-    likes,
-    // user,
-  } = request.body;
+  const { title, author, url, likes, comments } = request.body;
 
   // if (user.toString() !== request.user.id.toString()) {
   //   return response.status(401).json({ error: 'cannot update another user\'s blog' });
@@ -81,11 +76,35 @@ blogsRouter.put('/:id', async (request, response) => {
       author,
       url,
       likes,
+      comments,
     },
     { new: true, runValidators: true, context: 'query' }
   );
 
   await blog.populate('user', { username: 1, name: 1 });
+  return response.json(blog);
+});
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { content } = request.body;
+
+  if (!content) {
+    return response.status(404).send();
+  }
+
+  console.log(request.params.id);
+
+  const blog = await Blog.findByIdAndUpdate(
+    request.params.id,
+    {
+      $push: { comments: content },
+    },
+    { new: true, runValidators: true, context: 'query' }
+  );
+
+  await blog.populate('user', { username: 1, name: 1 });
+
+  console.log(blog);
   return response.json(blog);
 });
 
