@@ -10,6 +10,7 @@ import Togglable from './components/Togglable';
 import Menu from './components/Menu';
 import UsersView from './components/UsersView';
 import SingleUserView from './components/SingleUserView';
+import SingleBlogView from './components/BlogView';
 import { initializeBlogs, createBlog } from './reducers/blogReducer';
 import { logOutUser, initializeUser } from './reducers/loginReducer';
 import { initializeUsers } from './reducers/usersReducer';
@@ -44,8 +45,15 @@ const App = () => {
     (blog1, blog2) => blog2.likes - blog1.likes
   );
 
-  const match = useMatch('/users/:id');
-  const userToView = match ? users.find((u) => u.id === match.params.id) : null;
+  const matchUser = useMatch('/users/:id');
+  const userToView = matchUser
+    ? users.find((u) => u.id === matchUser.params.id)
+    : null;
+
+  const matchBlog = useMatch('/blogs/:id');
+  const blogToView = matchBlog
+    ? blogs.find((b) => b.id === matchBlog.params.id)
+    : null;
 
   return (
     <>
@@ -75,7 +83,7 @@ const App = () => {
 
                   <br />
                   {sortedBlogs.map((b) => (
-                    <Blog key={b.id} blog={b} loggedUser={user.username} />
+                    <Blog key={b.id} blog={b} />
                   ))}
                 </div>
               }
@@ -84,6 +92,12 @@ const App = () => {
             <Route
               path="/users/:id"
               element={<SingleUserView user={userToView} />}
+            />
+            <Route
+              path="/blogs/:id"
+              element={
+                <SingleBlogView blog={blogToView} loggedUser={user.username} />
+              }
             />
           </Routes>
         </div>
