@@ -39,7 +39,11 @@ const addComment = async (id, comment) => {
   const config = {
     headers: { Authorization: token },
   };
-  const response = await axios.post(`${baseUrl}/${id}`, comment, config);
+  const response = await axios.post(
+    `${baseUrl}/${id}/comments`,
+    { content: comment },
+    config
+  );
   return response.data;
 };
 

@@ -2,6 +2,7 @@ import { React } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addLikeTo, removeBlog } from '../reducers/blogReducer';
+import CommentsView from './CommentsView';
 // import PropTypes from 'prop-types';
 
 const SingleBlogView = ({ blog, loggedUser }) => {
@@ -47,12 +48,7 @@ const SingleBlogView = ({ blog, loggedUser }) => {
           remove
         </button>
       </div>
-      <h2>comments</h2>
-      <ul>
-        {!blog.comments
-          ? null
-          : blog.comments.map((comment) => <li>{comment}</li>)}
-      </ul>
+      <CommentsView blog={blog} />
     </>
   );
 };

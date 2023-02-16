@@ -92,8 +92,6 @@ blogsRouter.post('/:id/comments', async (request, response) => {
     return response.status(404).send();
   }
 
-  console.log(request.params.id);
-
   const blog = await Blog.findByIdAndUpdate(
     request.params.id,
     {
@@ -104,7 +102,6 @@ blogsRouter.post('/:id/comments', async (request, response) => {
 
   await blog.populate('user', { username: 1, name: 1 });
 
-  console.log(blog);
   return response.json(blog);
 });
 
