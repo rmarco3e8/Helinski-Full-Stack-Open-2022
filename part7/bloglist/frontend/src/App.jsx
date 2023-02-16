@@ -2,6 +2,15 @@ import { React, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 // import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom';
 import { Routes, Route, useMatch } from 'react-router-dom';
+import {
+  Container,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@mui/material';
 import Blog from './components/Blog';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
@@ -56,7 +65,7 @@ const App = () => {
     : null;
 
   return (
-    <>
+    <Container>
       <h2>blogs</h2>
       <Notification />
       {user === null ? (
@@ -82,9 +91,24 @@ const App = () => {
                   </Togglable>
 
                   <br />
-                  {sortedBlogs.map((b) => (
+
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableBody>
+                        {sortedBlogs.map((b) => (
+                          <TableRow key={b.id}>
+                            <TableCell>
+                              <Blog blog={b} />
+                            </TableCell>
+                            <TableCell>{b.author}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  {/* {sortedBlogs.map((b) => (
                     <Blog key={b.id} blog={b} />
-                  ))}
+                  ))} */}
                 </div>
               }
             />
@@ -102,7 +126,7 @@ const App = () => {
           </Routes>
         </div>
       )}
-    </>
+    </Container>
   );
 };
 
