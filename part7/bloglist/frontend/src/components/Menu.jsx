@@ -1,11 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Button } from '@mui/material';
+import { AppBar, Toolbar, Button, Box } from '@mui/material';
 
-const Menu = () => (
-  // const padding = {
-  //   paddingRight: 5,
-  // };
+const Menu = ({ user, handleLogout }) => (
   <AppBar position="static">
     <Toolbar>
       <Button color="inherit" component={Link} to="/">
@@ -14,16 +11,14 @@ const Menu = () => (
       <Button color="inherit" component={Link} to="/users">
         users
       </Button>
+      <Button color="inherit" onClick={handleLogout}>
+        log out
+      </Button>
+      <Box component="em" color="inherit" sx={{ marginLeft: 'auto' }}>
+        {`Current User: ${user.name}`}
+      </Box>
     </Toolbar>
   </AppBar>
-  // <div>
-  //   <Link style={padding} to="/">
-  //     blogs
-  //   </Link>
-  //   <Link style={padding} to="/users">
-  //     users
-  //   </Link>
-  // </div>
 );
 
 export default Menu;

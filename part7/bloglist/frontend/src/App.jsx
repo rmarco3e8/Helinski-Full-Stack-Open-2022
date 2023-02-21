@@ -72,14 +72,7 @@ const App = () => {
         <LoginForm />
       ) : (
         <div>
-          <p>
-            {`${user.name} logged in`}
-            &nbsp;
-            <button type="button" onClick={handleLogout}>
-              logout
-            </button>
-          </p>
-          <Menu />
+          <Menu user={user} handleLogout={handleLogout} />
           <Routes>
             <Route
               path="/"
